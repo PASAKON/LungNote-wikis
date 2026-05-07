@@ -13,11 +13,11 @@ tags: [domain, glossary]
 
 | Term | Definition |
 |------|------------|
-| **Note** | บันทึกข้อความ/ลิสต์/ไอเดีย หน่วยเล็กสุดของเนื้อหา |
-| **Notebook** | สมุดโน้ต — กลุ่ม note หลายอันรวมกัน, มีชื่อ + สีปก |
-| **Todo / Checklist** | ไอเทมแบบ checkbox (done/undone) ในโน้ต |
-| **Folder** | จัดกลุ่ม notebook ตามวิชา/โปรเจค/หมวด |
-| **Tag** | label หลายอันต่อ note ใช้ filter/search |
+| **Note** | บันทึกข้อความ/ลิสต์/ไอเดีย หน่วยเล็กสุดของเนื้อหา. Table: `lungnote_notes` |
+| **Notebook** | สมุดโน้ต — กลุ่ม note หลายอันรวมกัน, มีชื่อ + `cover_color`. Table: `lungnote_notebooks` |
+| **Todo / Checklist** | ไอเทม checkbox (done/undone) ภายใน note, ลำดับด้วย `position`. Table: `lungnote_todos` |
+| **Folder** | จัดกลุ่ม notebook (nested ได้ผ่าน `parent_folder_id`, app cap ≤ 3 ระดับ). Table: `lungnote_folders` |
+| **Tag** | label สี ใช้ filter/search. Many-to-many กับ note ผ่าน junction. Tables: `lungnote_tags` + `lungnote_notes_tags` |
 
 ## Business
 
