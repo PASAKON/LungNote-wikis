@@ -66,3 +66,16 @@ tags: [domain, glossary]
 |------|------------|
 | **OpenRouter** | LLM gateway — routes requests to multiple model providers (OpenAI, Anthropic, Google, Mistral, ฯลฯ) ผ่าน API เดียว |
 | **OPENROUTER_API_KEY** | Secret key สำหรับเรียก OpenRouter API. Server-only. Format: `sk-or-v1-...` |
+
+## Auth & Identity
+
+| Term | Definition |
+|------|------------|
+| **Account Linking** | จับคู่ identity ภายนอก (LINE userId) กับ Supabase user ([[../40-Decisions/0008-line-only-auth-account-linking\|ADR-0008]]) |
+| **Synthetic Email** | Email ที่สร้างขึ้นเพื่อให้ Supabase Auth พอใจ — `line.<userId>@auth.lungnote.com`. ไม่ใช่ email จริง, ไม่มี MX record |
+| **Magic Link** | One-time URL ที่ Supabase generate ผ่าน `auth.admin.generateLink({type:'magiclink'})` — สร้าง session โดยไม่ต้อง password |
+| **One-time Token** | random 256-bit string ใช้แลก Supabase session ครั้งเดียว, TTL 5 นาที, store แค่ sha256 hash |
+| **Postback** | LINE event type — เมื่อ user แตะปุ่ม Rich Menu / Flex action ที่กำหนด `postback`, bot ได้ payload `data` |
+| **Rich Menu** | UI menu ที่ load อยู่ที่ chat ของ OA — image 2500×1686 + tap regions |
+| **Flex Message** | Rich card UI ของ LINE — JSON-defined layout, supports buttons/images/typography |
+| **LIFF** | LINE Front-end Framework — webapp ที่รันใน LINE in-app browser, มี SDK เข้าถึง userId/profile |
