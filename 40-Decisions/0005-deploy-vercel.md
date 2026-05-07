@@ -23,7 +23,7 @@ Accepted
 
 ## Decision
 
-ใช้ **Vercel Hobby** (free tier) เป็นจุดเริ่ม. Deploy via GitHub integration — push `main` → auto deploy production.
+ใช้ **Vercel Hobby** (free tier) เป็นจุดเริ่ม. Deploy via GitHub integration — push `main` ของ `PASAKON/LungNote-webapp` → auto deploy production. (ดู [[0002-split-repos-webapp-wikis-design]] สำหรับ split-repo layout — Vercel ดู repo เดียว.)
 
 Custom domain `lungnote.com` + `www.lungnote.com` (`www` → 308 → apex). DNS เปลี่ยนจาก Namecheap park → Vercel:
 - `A` apex → `76.76.21.21`
@@ -51,7 +51,7 @@ Custom domain `lungnote.com` + `www.lungnote.com` (`www` → 308 → apex). DNS 
 
 ## TODO
 
-- [ ] Connect Vercel project → GitHub repo `PASAKON/LungNote`
+- [ ] Connect Vercel project → GitHub repo `PASAKON/LungNote-webapp` (root = `/`)
 - [ ] Add custom domain `lungnote.com` + `www.lungnote.com`
 - [ ] อัพเดท DNS A/CNAME ที่ Namecheap → Vercel
 - [ ] Set production env vars (เมื่อมี: `NEXTAUTH_*`, `DATABASE_URL`, ฯลฯ)

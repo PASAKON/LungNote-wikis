@@ -12,7 +12,7 @@ tags: [adr, decisions]
 | # | Title | Status | Date |
 |---|-------|--------|------|
 | 0001 | [[0001-stack-nextjs-typescript-tailwind]] | Accepted | 2026-05-07 |
-| 0002 | [[0002-monorepo-webapp-wikis]] | Accepted | 2026-05-07 |
+| 0002 | [[0002-split-repos-webapp-wikis-design]] | Accepted | 2026-05-07 |
 | 0003 | [[0003-i18n-native-not-next-intl]] | Accepted | 2026-05-07 |
 | 0004 | [[0004-pwa-via-manifest]] | Accepted | 2026-05-07 |
 | 0005 | [[0005-deploy-vercel]] | Accepted | 2026-05-07 |
