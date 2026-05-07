@@ -10,7 +10,8 @@ tags: [workflow]
 1. อ่าน [[../../CLAUDE|CLAUDE.md root]]
 2. อ่าน [[../00-Index/README|wiki index]]
 3. ถ้าแก้เรื่อง architecture → อ่าน [[../10-Architecture/Overview]] + ADR ที่เกี่ยว
-4. ถ้าแก้ใหม่ที่ส่งผลต่อ architecture → เพิ่ม ADR ใหม่
+4. ถ้าแก้ใหม่ที่ส่งผลต่อ architecture → เพิ่ม ADR ใหม่ (ดู [[../20-Conventions/Wiki-Style#7-ADR-Rules|Wiki-Style §7]] + [[Wiki-Workflow#scenario-a]])
+5. ถ้าจะแก้ wiki → อ่าน [[../20-Conventions/Wiki-Style|Wiki-Style]] + [[Wiki-Workflow]] ก่อน
 
 ## Branch
 
