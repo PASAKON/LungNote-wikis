@@ -59,3 +59,10 @@ tags: [domain, glossary]
 | **Channel Secret** | Secret 32-char ใช้ verify webhook signature (`x-line-signature` header). Env: `LINE_CHANNEL_SECRET` |
 | **Channel Access Token** | Long-lived token เรียก LINE Messaging API (push/reply message). Env: `LINE_CHANNEL_ACCESS_TOKEN` |
 | **Webhook URL** | Endpoint ที่ LINE call เมื่อ user message เข้ามา. ตั้งใน LINE Developer Console (TBD path เช่น `/api/line/webhook`) |
+
+## LLM / AI
+
+| Term | Definition |
+|------|------------|
+| **OpenRouter** | LLM gateway — routes requests to multiple model providers (OpenAI, Anthropic, Google, Mistral, ฯลฯ) ผ่าน API เดียว |
+| **OPENROUTER_API_KEY** | Secret key สำหรับเรียก OpenRouter API. Server-only. Format: `sk-or-v1-...` |
