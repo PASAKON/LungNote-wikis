@@ -51,12 +51,14 @@ Custom domain `lungnote.com` + `www.lungnote.com` (`www` → 308 → apex). DNS 
 
 ## TODO
 
-- [ ] Connect Vercel project → GitHub repo `PASAKON/LungNote-webapp` (root = `/`)
-- [ ] Add custom domain `lungnote.com` + `www.lungnote.com`
-- [ ] อัพเดท DNS A/CNAME ที่ Namecheap → Vercel
-- [ ] Set production env vars (เมื่อมี: `NEXTAUTH_*`, `DATABASE_URL`, ฯลฯ)
-- [ ] เปิด Vercel Spend Limit + email alert
+- [x] Connect Vercel project → GitHub repo `PASAKON/LungNote-webapp` (root = `/`)
+- [x] Add custom domain `lungnote.com` + `www.lungnote.com`
+- [x] อัพเดท DNS A `@` + A `www` → `76.76.21.21` ที่ Namecheap
+- [x] Set production env vars (Supabase: 6 vars in Production scope)
+- [x] HTTPS cert ออก (manual `vercel certs issue` หลัง auto-issue ติดคิว)
+- [ ] **เปิด Vercel Spend Limit + email alert** (Settings → Billing → Spend Management)
 - [ ] เพิ่ม `vercel.json` ถ้าต้อง custom routes/headers (ตอนนี้ยังไม่จำเป็น)
+- [ ] Move from Hobby → Pro plan ก่อน traffic > free tier limit
 
 ## See Also
 

@@ -87,16 +87,17 @@ Env vars (ทั้ง local `.env.local` + Vercel Production):
 ## Open questions / TODO
 
 - [ ] Verify Supabase project region (Singapore แนะนำสำหรับ TH user)
-- [ ] **Rotate** `SUPABASE_DB_PASSWORD` (เคยถูกแชร์ผ่าน chat)
-- [ ] Install `@supabase/ssr` + `@supabase/supabase-js`
-- [ ] สร้าง `src/lib/supabase/{server,client,middleware}.ts`
-- [ ] Wire Supabase auth refresh เข้า existing `src/proxy.ts`
+- [ ] **Rotate** `SUPABASE_DB_PASSWORD` (เคยถูกแชร์ผ่าน chat — ทำที่ Supabase dashboard)
+- [x] Install `@supabase/ssr` + `@supabase/supabase-js`
+- [x] สร้าง `src/lib/supabase/{server,client,middleware}.ts`
+- [x] Wire Supabase auth refresh เข้า existing `src/proxy.ts` (`updateSession()`)
+- [x] Add `/api/health` endpoint pinging Supabase to verify env vars in deployed env
 - [ ] First schema migration: `profiles` (linked to `auth.users`), `notebooks`, `notes`, `todos`, `folders`, `tags`
 - [ ] RLS policy ทุกตาราง (deny-by-default + per-owner CRUD)
 - [ ] Decide: ใช้ Supabase JS client ตรงๆ vs ใส่ Drizzle ORM ทับ (ADR ต่างหาก ถ้าเลือก Drizzle)
-- [ ] Update [[../10-Architecture/Overview]] — Auth + DB sections
-- [ ] Update [[../30-Domain/Glossary]] — RLS, Publishable key, Secret key, PostgREST, JWT
-- [ ] เขียน workflow สำหรับ DB migration → [[../50-Workflows/Dev-Workflow]]
+- [x] Update [[../10-Architecture/Overview]] — Auth + DB sections + data flow skeleton
+- [x] Update [[../30-Domain/Glossary]] — RLS, Publishable key, Secret key, PostgREST, JWT, `@supabase/ssr`
+- [ ] เขียน workflow สำหรับ DB migration → [[../50-Workflows/Dev-Workflow]] (ทำตอนเริ่ม schema)
 
 ## See Also
 
