@@ -78,4 +78,7 @@ tags: [domain, glossary]
 | **Postback** | LINE event type — เมื่อ user แตะปุ่ม Rich Menu / Flex action ที่กำหนด `postback`, bot ได้ payload `data` |
 | **Rich Menu** | UI menu ที่ load อยู่ที่ chat ของ OA — image 2500×1686 + tap regions |
 | **Flex Message** | Rich card UI ของ LINE — JSON-defined layout, supports buttons/images/typography |
-| **LIFF** | LINE Front-end Framework — webapp ที่รันใน LINE in-app browser, มี SDK เข้าถึง userId/profile |
+| **LIFF** | LINE Front-end Framework — webapp ที่รันใน LINE in-app browser, มี SDK เข้าถึง userId/profile. ใช้เป็น primary auth ใน LINE app ([[../40-Decisions/0010-liff-auth\|ADR-0010]]) |
+| **LIFF ID** | ID ของ LIFF app, สร้างที่ LINE Developer Console. Env: `NEXT_PUBLIC_LINE_LIFF_ID` |
+| **id_token** | JWT signed by LINE OIDC. Issued by LIFF (`liff.getIDToken()`) หรือ LINE Login OAuth. Server verify ผ่าน `https://api.line.me/oauth2/v2.1/verify` |
+| **LINE Login Channel ID** | Audience ของ id_token. Env: `LINE_LOGIN_CHANNEL_ID`. ต่างจาก Messaging API Channel ID, แต่อยู่ channel เดียวกันได้ถ้า enable ทั้ง 2 product |
