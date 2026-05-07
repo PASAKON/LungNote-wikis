@@ -17,6 +17,7 @@ tags: [adr, decisions]
 | 0004 | [[0004-pwa-via-manifest]] | Accepted | 2026-05-07 |
 | 0005 | [[0005-deploy-vercel]] | Accepted | 2026-05-07 |
 | 0006 | [[0006-supabase-db-auth]] | Accepted | 2026-05-07 |
+| 0007 | [[0007-line-oa-messaging]] | Accepted | 2026-05-08 |
 
 ## Status legend
 
