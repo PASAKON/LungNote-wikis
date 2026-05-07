@@ -50,3 +50,12 @@ tags: [domain, glossary]
 | **`profiles`** | App-owned table linked 1:1 กับ `auth.users` สำหรับ profile data ฝั่งเรา |
 | **JWT** | Token ที่ Supabase Auth ออก, เก็บใน HttpOnly cookie (`sb-<project-ref>-auth-token`) |
 | **`@supabase/ssr`** | Lib ที่ wire Supabase auth → Next App Router cookie flow |
+
+## LINE OA / Messaging
+
+| Term | Definition |
+|------|------------|
+| **LINE OA** | LINE Official Account — channel ที่ LungNote ใช้ส่งข้อความหาผู้ใช้ผ่าน LINE Messaging API |
+| **Channel Secret** | Secret 32-char ใช้ verify webhook signature (`x-line-signature` header). Env: `LINE_CHANNEL_SECRET` |
+| **Channel Access Token** | Long-lived token เรียก LINE Messaging API (push/reply message). Env: `LINE_CHANNEL_ACCESS_TOKEN` |
+| **Webhook URL** | Endpoint ที่ LINE call เมื่อ user message เข้ามา. ตั้งใน LINE Developer Console (TBD path เช่น `/api/line/webhook`) |
