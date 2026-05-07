@@ -19,6 +19,7 @@ tags: [adr, decisions]
 | 0006 | [[0006-supabase-db-auth]] | Accepted | 2026-05-07 |
 | 0007 | [[0007-line-oa-messaging]] | Accepted | 2026-05-08 |
 | 0008 | [[0008-line-only-auth-account-linking]] | Accepted | 2026-05-08 |
+| 0009 | [[0009-lungnote-hierarchy-schema]] | Accepted | 2026-05-08 |
 
 ## Status legend
 
