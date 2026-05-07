@@ -15,7 +15,7 @@ tags: [architecture, overview]
 - **PWA**: Native `manifest.ts` ([[../40-Decisions/0004-pwa-via-manifest|ADR-0004]])
 - **Auth**: TBD ([[../40-Decisions/README|ADR pending]])
 - **DB**: TBD ([[../40-Decisions/README|ADR pending]])
-- **Deploy**: TBD (Vercel default)
+- **Deploy**: Vercel + `lungnote.com` ([[../40-Decisions/0005-deploy-vercel|ADR-0005]])
 
 ## i18n Routing
 
