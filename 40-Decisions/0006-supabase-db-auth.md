@@ -84,6 +84,10 @@ Env vars (ทั้ง local `.env.local` + Vercel Production):
 - **Self-host Postgres + Lucia/Better-Auth (DIY)**
   - ไม่เลือก: devops overhead เกิน MVP — ต้องรัน DB + auth service + email + storage เอง
 
+## Naming
+
+ทุก table ใน `public` schema **ต้อง prefix `lungnote_`** (ดู [[../20-Conventions/Database-Naming]]). กัน collision เผื่อ DB shared + filter ง่าย.
+
 ## Open questions / TODO
 
 - [ ] Verify Supabase project region (Singapore แนะนำสำหรับ TH user)
