@@ -36,3 +36,17 @@ tags: [domain, glossary]
 |------|-------|
 | **App** | `webapp/` — Next.js app |
 | **Vault** | `wikis/` — Obsidian vault |
+
+## Supabase / DB
+
+| Term | Definition |
+|------|------------|
+| **Supabase** | DB + Auth + Storage provider ([[../40-Decisions/0006-supabase-db-auth\|ADR-0006]]). Project ref `qkaxvockysyazmtormvf` |
+| **RLS** | Row-Level Security — Postgres policy ตัดสินว่า user แต่ละคน SELECT/INSERT/UPDATE/DELETE แถวไหนได้บ้าง. Default = deny |
+| **Publishable key** | Supabase client-safe key (`sb_publishable_…`) — โอเค embed ใน browser. แทน legacy `anon` JWT |
+| **Secret key** | Supabase server-only key (`sb_secret_…`) — bypass RLS, ห้ามส่ง client. แทน legacy `service_role` JWT |
+| **PostgREST** | REST layer ที่ Supabase สร้างจาก schema อัตโนมัติ (auto-generated CRUD endpoint) |
+| **`auth.users`** | Supabase built-in table เก็บ user account (managed) |
+| **`profiles`** | App-owned table linked 1:1 กับ `auth.users` สำหรับ profile data ฝั่งเรา |
+| **JWT** | Token ที่ Supabase Auth ออก, เก็บใน HttpOnly cookie (`sb-<project-ref>-auth-token`) |
+| **`@supabase/ssr`** | Lib ที่ wire Supabase auth → Next App Router cookie flow |

@@ -13,8 +13,8 @@ tags: [architecture, overview]
 - **UI Kit**: shadcn/ui ([[../40-Decisions/0001-stack-nextjs-typescript-tailwind|ADR-0001]])
 - **i18n**: Native Next 16 dictionaries + `proxy.ts` ([[../40-Decisions/0003-i18n-native-not-next-intl|ADR-0003]])
 - **PWA**: Native `manifest.ts` ([[../40-Decisions/0004-pwa-via-manifest|ADR-0004]])
-- **Auth**: TBD ([[../40-Decisions/README|ADR pending]])
-- **DB**: TBD ([[../40-Decisions/README|ADR pending]])
+- **Auth**: Supabase Auth + RLS ([[../40-Decisions/0006-supabase-db-auth|ADR-0006]])
+- **DB**: Supabase Postgres + RLS ([[../40-Decisions/0006-supabase-db-auth|ADR-0006]])
 - **Deploy**: Vercel + `lungnote.com` ([[../40-Decisions/0005-deploy-vercel|ADR-0005]])
 
 ## i18n Routing
@@ -51,7 +51,24 @@ LungNote Projects/
 
 ## Data Flow (skeleton)
 
-ยังไม่กำหนด. เพิ่มเมื่อมี first feature.
+```
+Client (Browser/PWA)
+   ↓ HTTPS
+Vercel Edge (proxy.ts → locale routing)
+   ↓
+Next.js RSC / Route Handlers / Server Actions
+   ↓
+@supabase/ssr (cookie-based session)
+   ↓
+Supabase (PostgREST + Auth)
+   ↓
+Postgres + RLS (per-user isolation)
+```
+
+- ทุก query ผ่าน Supabase client → RLS enforce ระดับแถว
+- Auth session = HttpOnly cookie, refresh ใน middleware (proxy.ts)
+- Mutation ผ่าน Server Action เป็นหลัก, fallback REST เฉพาะที่ต้อง
+- Realtime / Storage = ค่อยเพิ่มเมื่อมี use case
 
 ## See Also
 
