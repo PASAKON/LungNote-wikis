@@ -15,10 +15,13 @@ tags: [workflow]
 
 ## Branch
 
-- `main` — protected, deployable
+- `main` — **protected** (linear history, no force-push, no deletion). ห้าม commit ตรง
 - `feat/<scope>-<short>` — feature
 - `fix/<scope>-<short>` — bug
-- `wiki/<topic>` — wiki only
+- `wiki/<topic>` — wiki only (ใน wiki repo)
+- `design/<topic>` — design only (ใน design repo)
+
+ทุก branch → PR → rebase merge เข้า main. ดู [[Multi-Repo-Workflow#3-daily-loop|Multi-Repo §3]].
 
 ## ก่อน commit
 
