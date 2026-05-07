@@ -1,0 +1,9 @@
+{
+  "useMarkdownLinks": false,
+  "newLinkFormat": "shortest",
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "99-Attachments",
+  "showLineNumber": true,
+  "spellcheck": false,
+  "promptDelete": true
+}
