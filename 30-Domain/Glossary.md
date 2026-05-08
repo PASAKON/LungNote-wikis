@@ -82,3 +82,14 @@ tags: [domain, glossary]
 | **LIFF ID** | ID ของ LIFF app, สร้างที่ LINE Developer Console. Env: `NEXT_PUBLIC_LINE_LIFF_ID` |
 | **id_token** | JWT signed by LINE OIDC. Issued by LIFF (`liff.getIDToken()`) หรือ LINE Login OAuth. Server verify ผ่าน `https://api.line.me/oauth2/v2.1/verify` |
 | **LINE Login Channel ID** | Audience ของ id_token. Env: `LINE_LOGIN_CHANNEL_ID`. ต่างจาก Messaging API Channel ID, แต่อยู่ channel เดียวกันได้ถ้า enable ทั้ง 2 product |
+| **OAuth Code Flow** | ([[../40-Decisions/0011-web-line-login-oauth\|ADR-0011]]) browser flow: redirect → code → server exchange → id_token. ใช้ `state` (CSRF) + `nonce`. เหมาะ desktop / web ที่ไม่อยู่ใน LINE app |
+| **State (OAuth)** | random string ที่ server ส่งไป OAuth provider แล้ว verify match ตอน callback. กัน CSRF. เก็บใน HttpOnly cookie 5 นาที |
+
+## UI / Loading States
+
+| Term | Definition |
+|------|------------|
+| **Skeleton loader** | Shimmer placeholder ที่ render ก่อน real data — โครงเหมือนหน้าจริง (greeting + stats + list rows) ไม่ใช่ spinner ลอยๆ. ป้องกัน CLS, ทำให้ perceived speed เร็วขึ้น |
+| **Shimmer** | animation gradient ไหลผ่าน skeleton 1.5s loop. ใช้สื่อว่า loading. Spec: `linear-gradient(90deg, transparent 0, rgba(255,255,255,0.5) 50%, transparent 100%)` |
+| **Next loading.tsx** | Next App Router convention — ไฟล์ `loading.tsx` ที่ root ของ route segment = automatic Suspense boundary, render ระหว่าง async server data resolve |
+| **Rich Menu install script** | `webapp/scripts/install-rich-menu.sh` — idempotent installer (delete existing same-name + create + upload PNG + set default). Runbook: [[../50-Workflows/Rich-Menu-Install]] |

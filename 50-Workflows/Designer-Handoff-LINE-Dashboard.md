@@ -9,6 +9,16 @@ Spec ที่ Designer ต้อง deliver สำหรับ feature [[../40-
 
 Code/wiring จะทำหลัง assets ลง.
 
+> **Status (2026-05-08):** Round 1 + Round 2 ของ designer ส่ง [PASAKON/LungNote-design#1](https://github.com/PASAKON/LungNote-design/pull/1) + [PR #2](https://github.com/PASAKON/LungNote-design/pull/2) ลง main แล้ว. ทั้งหมด wired เข้า webapp:
+>
+> - ✅ Rich Menu PNG (default + light themes) → installed via [`scripts/install-rich-menu.sh`](https://github.com/PASAKON/LungNote-webapp/blob/main/scripts/install-rich-menu.sh)
+> - ✅ 5 Flex Message JSON → `webapp/src/lib/line/flex-templates/`, runtime URL rewrite ใน `lib/line/flex.ts`
+> - ✅ Mobile dashboard mocks (list/edit/empty/error/preview-all-states) → wired ใน `/dashboard` (mobile breakpoint ≤768px)
+> - ✅ Desktop dashboard mock (`brand/dashboard.html`) → wired ใน `/dashboard` ผ่าน `Sidebar.tsx` + responsive CSS (≥769px)
+> - ✅ Skeleton loaders (`lungnote-skeleton-loaders.html`) → ported เป็น Next `loading.tsx` + `skeleton.css`
+> - ✅ Login states (connecting/success/error) → wired ใน `/liff` (LiffClient)
+> - ✅ Brand icons (16 PNG light+dark) → ใช้ใน manifest + apple-icon (TODO: swap from ImageResponse to designer PNGs ใน next round)
+
 ---
 
 ## Brand Tokens (reference)
