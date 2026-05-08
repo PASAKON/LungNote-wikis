@@ -22,6 +22,7 @@ tags: [adr, decisions]
 | 0009 | [[0009-lungnote-hierarchy-schema]] | Accepted | 2026-05-08 |
 | 0010 | [[0010-liff-auth]] | Accepted | 2026-05-08 |
 | 0011 | [[0011-web-line-login-oauth]] | Accepted | 2026-05-08 |
+| 0012 | [[0012-unified-todo-memory-model]] | Accepted | 2026-05-08 |
 
 ## Status legend
 

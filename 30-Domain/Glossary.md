@@ -13,9 +13,13 @@ tags: [domain, glossary]
 
 | Term | Definition |
 |------|------------|
-| **Note** | บันทึกข้อความ/ลิสต์/ไอเดีย หน่วยเล็กสุดของเนื้อหา. Table: `lungnote_notes` |
+| **Memory item** | หน่วยความจำหลัก (note ≡ todo) ตั้งแต่ [[../40-Decisions/0012-unified-todo-memory-model\|ADR-0012]]. Row ใน `lungnote_todos` มี `text + done + due_at + due_text + source`. ทุกอย่างที่ user "จด" / "เตือน" / "todo" ผ่าน chat หรือ Web ลงตัวเดียวกัน |
+| **Note (container)** | หลัง ADR-0012 เป็นแค่ container/group สำหรับ memory items. Row ใน `lungnote_notes` |
+| **Inbox note** | "📥 Inbox" — note อัตโนมัติต่อ user ที่ chat-captured items ลงไป (เพราะ `lungnote_todos.note_id` NOT NULL). Lazy-create ที่ first capture |
 | **Notebook** | สมุดโน้ต — กลุ่ม note หลายอันรวมกัน, มีชื่อ + `cover_color`. Table: `lungnote_notebooks` |
-| **Todo / Checklist** | ไอเทม checkbox (done/undone) ภายใน note, ลำดับด้วย `position`. Table: `lungnote_todos` |
+| **Todo** | alias ของ Memory item — UI เรียก "Todo" ที่ `/dashboard/todo`. Table: `lungnote_todos`. ลำดับด้วย `position` |
+| **due_at / due_text** | timestamp + raw user phrase ("พรุ่งนี้") ที่ AI extract จาก message ตอน capture ([[../40-Decisions/0012-unified-todo-memory-model\|ADR-0012]]) |
+| **source (todo)** | enum `'chat' \| 'web' \| 'liff'` — บอก origin ของ memory item เพื่อ analytics + filter |
 | **Folder** | จัดกลุ่ม notebook (nested ได้ผ่าน `parent_folder_id`, app cap ≤ 3 ระดับ). Table: `lungnote_folders` |
 | **Tag** | label สี ใช้ filter/search. Many-to-many กับ note ผ่าน junction. Tables: `lungnote_tags` + `lungnote_notes_tags` |
 
