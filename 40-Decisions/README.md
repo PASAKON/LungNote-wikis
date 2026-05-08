@@ -21,6 +21,7 @@ tags: [adr, decisions]
 | 0008 | [[0008-line-only-auth-account-linking]] | Accepted | 2026-05-08 |
 | 0009 | [[0009-lungnote-hierarchy-schema]] | Accepted | 2026-05-08 |
 | 0010 | [[0010-liff-auth]] | Accepted | 2026-05-08 |
+| 0011 | [[0011-web-line-login-oauth]] | Accepted | 2026-05-08 |
 
 ## Status legend
 
