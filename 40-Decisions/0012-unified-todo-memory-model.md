@@ -99,10 +99,23 @@ LINE reply also surfaces the resolved date: `บันทึกแล้ว ✓ 
 - `due_at` is a single timestamp. Recurring reminders ("ทุกวันจันทร์") need a separate `recurrence` column or join table — out of scope.
 - LLM resolution of relative dates can be wrong (e.g. "อาทิตย์หน้า" ambiguity: next Sunday vs. next week?). We surface `due_text` in the LINE reply and the UI tooltip so the user sees what was understood and can correct it.
 
-## Phase 2 (deferred)
+## Phase 2 — tool-calling AI (delivered)
 
-- **Tool-calling AI fallback** — let the AI invoke `save_memory(text, due_at)` from free-form chat without requiring a prefix. Needs OpenRouter tool-call format wired into `lib/ai/reply.ts`. Out of scope for MVP.
+Phase 2 ships in the same PR as Phase 1.
+
+- **Tools exposed to the model** (`lib/ai/tools.ts`):
+  - `save_memory(text, due_at?, due_text?)` → `lungnote_todos` row, `source='chat'`
+  - `list_pending()` → up to 20 open items, due-first
+- **Agentic loop** (`lib/ai/reply.ts`): up to 3 iterations. Model returns `tool_calls` → executor runs them in parallel → tool messages appended → loop. Max iterations capped to bound cost/latency; loop exhaustion returns `ai_error`.
+- **System prompt** rebuilt per turn so today's BKK date stays fresh. Model resolves "พรุ่งนี้/วันพุธหน้า" inline before passing `due_at` to the tool — no separate extraction round-trip.
+- **Conversation memory** persists only user + final-assistant text turns (rolling 5+5). Tool-call scaffolding is stripped — keeps prompts tight.
+- **Anonymous sessions** (`lineUserId === "anonymous"`) get tools stripped — no DB scope to attach saves to. Model still answers in-scope questions.
+- **Prefix shortcuts retained** — webhook still matches `จด/บันทึก/todo/...` and the list-intent regex as a fast path. Tool-calling is the fallback for free-form phrasing the regexes don't catch (e.g. "งานฟิสิกส์วันพุธมีไหม", "นัดหมอ 5 โมงเย็น").
+
+## Phase 3 (deferred)
+
 - **Daily reminder cron** — Vercel Cron at 08:00 BKK pushes a LINE message of items where `due_at < tomorrow_start`. Requires Pro plan budget approval.
+- **Recurring reminders** — "ทุกวันจันทร์" needs a `recurrence` column or join table.
 
 ## References
 
