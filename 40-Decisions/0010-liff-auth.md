@@ -100,14 +100,16 @@ Once cookie is set on `lungnote.com`, all subsequent requests authenticate via `
 
 ## Open questions / TODO
 
-- [ ] User: add **LINE Login product** to existing Messaging API channel (LINE Developer Console)
-- [ ] User: create LIFF app, set Endpoint URL = `https://lungnote.com/liff`, scope `profile openid`, Bot Link ON
-- [ ] User: copy LIFF ID + LINE Login Channel ID → set `NEXT_PUBLIC_LINE_LIFF_ID` and `LINE_LOGIN_CHANNEL_ID` in Vercel env
+- [x] User: LINE Login product enabled on Messaging API channel `2010007749`
+- [x] User: LIFF app created — `LIFF_ID=2010007749-Ms996Bfr`, endpoint `https://lungnote.com/liff`, scope `profile openid`, Bot Link ON
+- [x] User: env vars set in Vercel — `NEXT_PUBLIC_LINE_LIFF_ID`, `LINE_LOGIN_CHANNEL_ID=2010007749`, `LINE_LOGIN_CHANNEL_SECRET`
 - [x] Install `@line/liff`
 - [x] Implement `/liff` page + `/api/auth/liff` + `lib/auth/liff-verify`
 - [x] Update Flex URL rewrite to use LIFF URL if env set, fallback to account-linking URL
-- [ ] Wire designer Rich Menu config — already targets `liff.line.me/<id>/dashboard`, just needs real ID after user creates LIFF app
-- [ ] Telemetry: log LIFF vs account-linking ratio (Vercel Analytics)
+- [x] Designer login states wired (spinner / success / error) at `/liff` (designer's `preview-all-states.html`)
+- [x] Wire designer Rich Menu config — installed via [`scripts/install-rich-menu.sh`](https://github.com/PASAKON/LungNote-webapp/blob/main/scripts/install-rich-menu.sh), substitutes `YOUR_LIFF_ID` → `2010007749-Ms996Bfr`
+- [x] Migrate auth paths to shared `lib/auth/line-session.ts#upsertLineUserAndSetSession` (LIFF + OAuth use it; account-linking migration tracked in next refactor)
+- [ ] Telemetry: log LIFF vs account-linking vs OAuth ratio (Vercel Analytics)
 
 ## See Also
 

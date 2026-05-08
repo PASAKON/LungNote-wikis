@@ -87,12 +87,14 @@ Accepted
 - [x] อัพเดท Glossary "LINE OA / Messaging"
 - [x] Implement: `src/lib/line/{verify,client,types}.ts` + `src/app/api/line/webhook/route.ts`
 - [x] Auto-reply rules เริ่มต้น (สวัสดี/ช่วย/เว็บ/เกี่ยวกับ + echo)
-- [ ] **ทดสอบ**: ตั้ง webhook URL `https://lungnote.com/api/line/webhook` ใน LINE Console → toggle "Use webhook" ON → กด Verify → message OA → ตรวจ reply
-- [ ] เพิ่ม `audit_log` table (Postgres) เก็บ webhook event payload
-- [ ] LINE Login OAuth → Supabase Auth (ADR แยกเมื่อทำ)
+- [x] **ทดสอบ**: webhook URL ตั้ง + verify ผ่าน + message OA + reply ทำงาน
+- [x] **Rich Menu**: install ผ่าน [`scripts/install-rich-menu.sh`](https://github.com/PASAKON/LungNote-webapp/blob/main/scripts/install-rich-menu.sh) — `richmenu-4dbc093b428014ff81540b61f44f6f70` (default for all users)
+- [x] LINE Login OAuth → ADR แยก ([[0011-web-line-login-oauth]])
+- [x] Auto-reply ใช้ Flex Message (designer-supplied JSON ใน `lib/line/flex-templates/`)
+- [ ] เพิ่ม `lungnote_audit_log` table (Postgres) เก็บ webhook event payload (ดู [[../20-Conventions/Database-Naming]] §9)
 - [ ] Push notification queue (rate limit + retry)
-- [ ] ตั้ง webhook URL สำหรับ preview deploy แยก (Vercel preview = unique URL ต่อ PR)
-- [ ] Decide: ตอบเป็น Flex Message หรือ plain text สำหรับ daily reminder
+- [ ] ตั้ง webhook URL สำหรับ preview deploy แยก (Vercel preview = unique URL ต่อ PR) — defer
+- [ ] Re-run install-rich-menu เมื่อ designer ส่ง PNG ใหม่ หรือ LIFF route เปลี่ยน
 
 ## See Also
 
