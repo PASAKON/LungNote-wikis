@@ -34,6 +34,15 @@ tags: [domain, glossary]
 | **Plan: Education** | สำหรับโรงเรียน/มหาวิทยาลัย, จัดการห้องเรียน, ติดต่อ school@lungnote.app |
 | **Wiki** | knowledge vault (`wikis/`), ไม่ใช่ runtime data |
 
+## Brand
+
+| Term | Definition |
+|------|------------|
+| **Cardboard palette** | Brand colors ที่ใช้ตั้งแต่ [[../40-Decisions/0013-cardboard-theme-overhaul\|ADR-0013]]. Light: bg `#F5EAD4`, surface `#FAF5E8`, accent `#C9A040`, fg `#3A3020`. Dark: bg `#1A1810`, surface `#2A2618`, accent `#C9A040`, fg `#E8E2D0`. แทน mint palette เดิม |
+| **Mascot** | กล่องกระดาษมีปาก (✓-shape) + แขนข้างๆ. ใช้เป็น app icon + OG image. Source: `design/mascot-icon/lungnote-mascot-icon.svg` |
+| **WordMark** | "Lung**Note**" — Lung สี fg, Note สี accent. Font: Caveat (display) |
+| **Tape** | สี `#D4A855` (light) / `#B89030` (dark) — ใช้เป็น highlight stripe ภายใต้ข้อความ (`.highlight-tape`) เลียนกระดาษเทปไฮไลต์ |
+
 ## Technical Alias
 
 | Term | Means |
