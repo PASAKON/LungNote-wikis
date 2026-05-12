@@ -126,16 +126,16 @@ No data migration needed — all new tables empty, existing notes keep flat (not
 
 ## Open questions / TODO
 
-- [ ] Apply migration to remote Supabase (psql via DATABASE_URL or `supabase db push`)
-- [ ] Regen `webapp/src/lib/supabase/database.types.ts` (hand-update for now; switch to `supabase gen types` later)
+- [x] Apply migration to remote Supabase (`webapp/supabase/migrations/20260508120000_lungnote_hierarchy.sql` applied)
+- [x] Regen `webapp/src/lib/supabase/database.types.ts` — hand-updated for all hierarchy tables
 - [ ] Update Dashboard to:
-  - List notebooks (sidebar / filter)
-  - "+ New notebook" + cover color picker
-  - Notes in current notebook (or "All" / "Inbox")
-  - Inline checklist (todos) inside note edit
-  - Tag chip + filter
-- [ ] Update `lungnote_notes_tags` Glossary entry
-- [ ] Decide: nesting depth limit for `lungnote_folders` (recommend ≤ 3, enforce in app)
+  - List notebooks (sidebar / filter) — **not built** (folders/notebooks/tags UI ยังว่าง, ดู [[0012-unified-todo-memory-model|ADR-0012]])
+  - "+ New notebook" + cover color picker — **not built**
+  - Notes in current notebook (or "All" / "Inbox") — Inbox done, notebook filter not built
+  - Inline checklist (todos) inside note edit — done via `/dashboard/todo`
+  - Tag chip + filter — **not built**
+- [ ] Update `lungnote_notes_tags` Glossary entry — pending UI
+- [ ] Decide: nesting depth limit for `lungnote_folders` (recommend ≤ 3, enforce in app) — pending UI
 
 ## See Also
 

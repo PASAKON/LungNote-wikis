@@ -91,7 +91,7 @@ Accepted
 - [x] **Rich Menu**: install ผ่าน [`scripts/install-rich-menu.sh`](https://github.com/PASAKON/LungNote-webapp/blob/main/scripts/install-rich-menu.sh) — `richmenu-4dbc093b428014ff81540b61f44f6f70` (default for all users)
 - [x] LINE Login OAuth → ADR แยก ([[0011-web-line-login-oauth]])
 - [x] Auto-reply ใช้ Flex Message (designer-supplied JSON ใน `lib/line/flex-templates/`)
-- [ ] เพิ่ม `lungnote_audit_log` table (Postgres) เก็บ webhook event payload (ดู [[../20-Conventions/Database-Naming]] §9)
+- [x] เพิ่ม trace table — built as `lungnote_chat_traces` (turn-level), not the generic `lungnote_audit_log` originally planned. ดู migration `20260509070000_lungnote_chat_traces.sql`
 - [ ] Push notification queue (rate limit + retry)
 - [ ] ตั้ง webhook URL สำหรับ preview deploy แยก (Vercel preview = unique URL ต่อ PR) — defer
 - [ ] Re-run install-rich-menu เมื่อ designer ส่ง PNG ใหม่ หรือ LIFF route เปลี่ยน

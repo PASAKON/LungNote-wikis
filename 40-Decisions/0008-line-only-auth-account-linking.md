@@ -133,12 +133,12 @@ LINE userId  Uxxxx...                  →  auth.users.email = line.Uxxxx...@aut
 ## Open questions / TODO
 
 - [ ] Verify subdomain `auth.lungnote.com` exists ใน DNS (no MX, just A record placeholder)
-- [ ] Supabase: confirm `auth.users.email` ของ synthetic emails จะไม่ trigger validation/SMTP (set `email_confirm: true` on createUser)
+- [x] Supabase: confirm `auth.users.email` ของ synthetic emails จะไม่ trigger validation/SMTP (`email_confirm: true` set in `lib/auth/line-session.ts`)
 - [ ] Decide: ถ้า user block OA → invalidate Supabase session ทันทีไหม? (use `unfollow` event)
 - [ ] Decide: rate-limit token mint per IP (กัน abuse OA) — defer until traffic
-- [ ] Designer: Flex Message template สำหรับ "Dashboard link" + "Welcome card"
-- [ ] Designer: Rich Menu image
-- [ ] LINE Console: enable postback, set Rich Menu
+- [x] Designer: Flex Message template สำหรับ "Dashboard link" + "Welcome card" — landed in [LungNote-design#1](https://github.com/PASAKON/LungNote-design/pull/1)
+- [x] Designer: Rich Menu image — landed in [LungNote-design#1](https://github.com/PASAKON/LungNote-design/pull/1), installed via `scripts/install-rich-menu.sh`
+- [x] LINE Console: enable postback, set Rich Menu (default + welcome, see [[0010-liff-auth]])
 
 ## See Also
 

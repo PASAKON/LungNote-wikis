@@ -158,9 +158,9 @@ create type lungnote_<noun>_status as enum ('todo', 'doing', 'done');
 
 ---
 
-## 9. Audit Log (recommended)
+## 9. Audit Log (recommended pattern, not yet built)
 
-ทุก mutation บน `lungnote_*` table ที่สำคัญ → log ใน `lungnote_audit_log`:
+ตัวอย่าง pattern ถ้าจะเพิ่ม generic audit log (ยังไม่ได้สร้างจริง):
 
 ```sql
 create table lungnote_audit_log (
@@ -176,6 +176,8 @@ create table lungnote_audit_log (
 ```
 
 (ใช้ trigger generic หรือ application-level log แล้วแต่ scope)
+
+**สิ่งที่มีจริงตอนนี้:** `lungnote_chat_traces` (LINE webhook turn-level trace, ไม่ใช่ row-level audit). ดู migration `20260509070000_lungnote_chat_traces.sql`.
 
 ---
 

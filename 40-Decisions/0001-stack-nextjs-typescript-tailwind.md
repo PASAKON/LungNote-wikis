@@ -42,3 +42,8 @@ UI: shadcn/ui. i18n: next-intl. Package manager: pnpm.
 - **Remix** — web standards ดี แต่ ecosystem เล็ก
 - **SvelteKit** — เร็ว เบา หา dev ยาก
 - **Astro** — เน้น static, ไม่เหมาะ app interactive
+
+## See Also
+
+- [[0003-i18n-native-not-next-intl]] — i18n decision reversed: native Next 16 dictionaries แทน `next-intl` ที่ระบุไว้เดิม
+- [[0013-cardboard-theme-overhaul]] — brand palette ปัจจุบัน (cardboard) — UI Kit ยังคงเป็น shadcn/ui

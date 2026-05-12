@@ -29,9 +29,11 @@ tags: [domain, glossary]
 |------|------------|
 | **LungNote** | ชื่อโปรเจค — อ่านว่า **"ลังโน้ต"**. "ลัง" = กล่องกระดาษสีเหลือง (the cardboard box mascot). Brand story: เราเป็นลังที่จะคอยช่วยคุณจดโน้ตและเตือนความจำ ไม่ว่าโน้ตจะสั้นหรือยาว — เพื่อให้คุณไม่ลืมสิ่งที่จะต้องทำในอนาคต. Webapp จดโน้ต/เช็คลิสต์/เตือนความจำสำหรับนักเรียน-นักศึกษาไทย. Tagline: "จดโน้ต เช็คลิสต์ จัดระเบียบชีวิต" |
 | **Production domain** | `lungnote.com` |
+| **Business email** | `lungnote.official@gmail.com` — operator identity สำหรับ 3rd-party services (Vercel/Supabase/GitHub/LINE/etc.). **ไม่ใช่** end-user auth. รายละเอียด: [[Business-Contact]] |
+| **Business phone** | `+66 83 775 8831` — SMS 2FA backup + business contact. รายละเอียด: [[Business-Contact]] |
 | **Plan: Free** | ฟีเจอร์หลัก, สร้าง notebook/note ไม่จำกัด |
 | **Plan: Pro** | เพิ่ม sync ข้ามอุปกรณ์ + backup auto |
-| **Plan: Education** | สำหรับโรงเรียน/มหาวิทยาลัย, จัดการห้องเรียน, ติดต่อ school@lungnote.app |
+| **Plan: Education** | สำหรับโรงเรียน/มหาวิทยาลัย, จัดการห้องเรียน. ติดต่อช่องทางเดียวกับ [[Business-Contact]] (`lungnote.official@gmail.com`) — alias `school@lungnote.com` รออัพ Google Workspace |
 | **Wiki** | knowledge vault (`wikis/`), ไม่ใช่ runtime data |
 
 ## Brand
@@ -54,6 +56,10 @@ tags: [domain, glossary]
 
 | Term | Definition |
 |------|------------|
+| **`lungnote_conversation_memory`** | Rolling 5-user + 5-assistant chat history per LINE userId. JSONB array `{role,content}[]`. Loaded into AI agent's `messages` at turn start. Server-only (no RLS policies) |
+| **`lungnote_chat_traces`** | One row per LINE webhook turn — user_text, path, tool_calls jsonb, reply_text, meta (model/tokens/cost/latency), error_text. Feeds admin viewer ([[../40-Decisions/0014-observability-chat-traces\|ADR-0014]]). Server-only |
+| **`lungnote_user_memory`** | Persistent JSONB facts per LINE userId — name, role, ongoing lists. Loaded as system-prompt suffix per turn ([[../40-Decisions/0018-user-memory\|ADR-0018]]). Server-only |
+| **`lungnote_agent_settings`** | Singleton row (`id='default'`) — `system_prompt_override` lets admin hot-swap the agent prompt without redeploy ([[../40-Decisions/0017-claudeflow-patterns\|ADR-0017]]). 60s in-process cache |
 | **Supabase** | DB + Auth + Storage provider ([[../40-Decisions/0006-supabase-db-auth\|ADR-0006]]). Project ref `qkaxvockysyazmtormvf` |
 | **RLS** | Row-Level Security — Postgres policy ตัดสินว่า user แต่ละคน SELECT/INSERT/UPDATE/DELETE แถวไหนได้บ้าง. Default = deny |
 | **Publishable key** | Supabase client-safe key (`sb_publishable_…`) — โอเค embed ใน browser. แทน legacy `anon` JWT |
@@ -79,6 +85,17 @@ tags: [domain, glossary]
 |------|------------|
 | **OpenRouter** | LLM gateway — routes requests to multiple model providers (OpenAI, Anthropic, Google, Mistral, ฯลฯ) ผ่าน API เดียว |
 | **OPENROUTER_API_KEY** | Secret key สำหรับเรียก OpenRouter API. Server-only. Format: `sk-or-v1-...` |
+| **ANTHROPIC_API_KEY** | Direct Anthropic key (preferred path when present, enables native prompt cache). Server-only. ([[../40-Decisions/0017-claudeflow-patterns\|ADR-0017]]) |
+| **LLM_MODEL** | Env that selects model + provider. Default `anthropic/claude-sonnet-4-5`. ([[../40-Decisions/0017-claudeflow-patterns\|ADR-0017]]) |
+| **Vercel AI SDK** | `ai` package — provider-agnostic `generateText({model, tools, ...})` API. Replaces hand-rolled tool loop ([[../40-Decisions/0016-ai-agent-v2\|ADR-0016]]) |
+| **Anthropic Sonnet** | Default model — Claude Sonnet 4.5 via `@ai-sdk/anthropic` or OpenRouter passthrough. Strongest tool-calling + native prompt cache |
+| **Prompt caching** | Anthropic `cache_control: ephemeral` on the static system prompt block — ~50-60% input-token saving on cache hit. Detected via `providerMetadata.{anthropic\|openrouter}` |
+| **Static / Dynamic prompt blocks** | System prompt split: **static** (cacheable, same all users) + **dynamic** (today's BKK date + per-user memory, never cached). Order matters for cache hit |
+| **TurnContext** | Per-turn server-side working memory for the agent — pending/done list cache, reply buffer, lineUserId, trace ref. Reset per webhook event ([[../40-Decisions/0016-ai-agent-v2\|ADR-0016]]) |
+| **Position-aware tool** | `*_by_position(n)` tools resolve `n → UUID` server-side from TurnContext's cached list, instead of trusting the model to remember UUIDs |
+| **Multi-bubble reply** | Agent calls `send_text_reply` / `send_flex_reply` up to 5 times per turn; runtime flushes the buffer in one LINE `replyMessage` call ([[../40-Decisions/0017-claudeflow-patterns\|ADR-0017]]) |
+| **AI_AGENT_MODE** | Env (`"true"` default) — `"true"` = all text events route to agent; `"false"` = legacy regex+AI hybrid ([[../40-Decisions/0012-unified-todo-memory-model\|ADR-0012]] Phase 2) as rollback safety net |
+| **User memory** | Persistent JSONB facts per LINE userId, written by `update_memory` tool ([[../40-Decisions/0018-user-memory\|ADR-0018]]). NOT the same as "memory item" (todo) |
 
 ## Auth & Identity
 
@@ -97,6 +114,27 @@ tags: [domain, glossary]
 | **LINE Login Channel ID** | Audience ของ id_token. Env: `LINE_LOGIN_CHANNEL_ID`. ต่างจาก Messaging API Channel ID, แต่อยู่ channel เดียวกันได้ถ้า enable ทั้ง 2 product |
 | **OAuth Code Flow** | ([[../40-Decisions/0011-web-line-login-oauth\|ADR-0011]]) browser flow: redirect → code → server exchange → id_token. ใช้ `state` (CSRF) + `nonce`. เหมาะ desktop / web ที่ไม่อยู่ใน LINE app |
 | **State (OAuth)** | random string ที่ server ส่งไป OAuth provider แล้ว verify match ตอน callback. กัน CSRF. เก็บใน HttpOnly cookie 5 นาที |
+
+## Observability / Admin
+
+| Term | Definition |
+|------|------------|
+| **Trace** | One row in `lungnote_chat_traces` — full record of one LINE webhook turn ([[../40-Decisions/0014-observability-chat-traces\|ADR-0014]]) |
+| **TraceCollector** | `src/lib/observability/trace.ts` class — emits structured `console.log` per pipeline step + buffers tool calls + fire-and-forget DB insert at turn end |
+| **Idempotency dedup** | `checkAlreadyProcessed(messageId)` — skip a webhook event if a successful trace for the same `trace_id` already landed within 5 min. Prevents double-reply on LINE redelivery |
+| **Trace path** | Enum `'dashboard'\|'list'\|'memory'\|'regex'\|'ai'\|'error'` — which handler branch took this turn |
+| **`admin.lungnote.com`** | Operator-only subdomain — chat trace browser, summary dashboard, single-turn drill-in ([[../40-Decisions/0015-admin-debug-viewer\|ADR-0015]]) |
+| **ADMIN_EMAILS** | Comma-separated allowlist of admin emails. Empty = no admin access. Read by `getAdminProfile()` |
+| **Magic-link admin auth** | Supabase OTP email → user clicks link → `/admin/auth/callback` exchanges → session cookie scoped to `admin.lungnote.com`. No password ([[../40-Decisions/0015-admin-debug-viewer\|ADR-0015]]) |
+
+## LINE Rich Menu (variants)
+
+| Term | Definition |
+|------|------------|
+| **Welcome rich menu** | 1-button "เริ่มต้นใช้งาน" menu linked to a new user on `follow` event. Env: `LINE_RICHMENU_WELCOME_ID` |
+| **Default rich menu** | 6-tile production menu — installed via `scripts/install-rich-menu.sh`, set as the bot-wide default |
+| **Rich Menu graduation** | After new user taps Welcome → bot replies → `unlinkUserRichMenu(userId)` so they revert to Default. Pattern wired in webhook |
+| **displayLoadingAnimation** | LINE API call that shows "..." in chat while bot processes. Fire-and-forget; auto-clears on reply or after `loadingSeconds` |
 
 ## UI / Loading States
 

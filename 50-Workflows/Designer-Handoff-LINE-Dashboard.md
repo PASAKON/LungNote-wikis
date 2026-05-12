@@ -23,23 +23,26 @@ Code/wiring จะทำหลัง assets ลง.
 
 ## Brand Tokens (reference)
 
-มาจาก landing page ([`webapp/src/components/landing/landing.css`](https://github.com/PASAKON/LungNote-webapp/blob/main/src/components/landing/landing.css)):
+Canonical palette = **Cardboard** ตั้งแต่ [[../40-Decisions/0013-cardboard-theme-overhaul|ADR-0013]]. Source of truth: [`design/brand/cardboard-palette.html`](https://github.com/PASAKON/LungNote-design/blob/main/brand/cardboard-palette.html).
 
 | Token | Light | Dark |
 |---|---|---|
-| `--bg` | `#faf8f4` | `#1e1e1c` |
-| `--surface` | `#fffef9` | `#2a2a28` |
-| `--border` | `#e0ddd4` | `#3a3835` |
-| `--muted` | `#8a8578` | `#8a8578` |
-| `--fg` | `#2c2a25` | `#e8e6e0` |
-| `--accent` | `#6aab8e` | `#6aab8e` |
-| `--accent-light` | `#e8f4ed` | `#1a3328` |
-| `--yellow` | `#f0d87a` | `#b8a550` |
-| `--yellow-light` | `#fdf6dc` | `#3d3a2a` |
+| `--bg` | `#F5EAD4` | `#1A1810` |
+| `--surface` | `#FAF5E8` | `#2A2618` |
+| `--border` | `#D4C4A0` | `#3D3828` |
+| `--muted` | `#A08050` | `#8A7850` |
+| `--fg` | `#3A3020` | `#E8E2D0` |
+| `--accent` | `#C9A040` | `#C9A040` |
+| `--accent-light` | `#F0E4C4` | `#3D3420` |
+| `--yellow` (tape) | `#D4A855` | `#B89030` |
+| `--red` | `#C45A3A` | `#C45A3A` |
+| `--orange` | `#D4A040` | `#D4A040` |
 
-Fonts: **Sarabun** (body, TH+EN), **Caveat** (display, EN-only headlines), **JetBrains Mono** (code/monospace).
+Semantic (both modes): success `#7A9A50` on `#E8F0D8` · warning `#D4A040` on `#F0E4C4` · error `#C45A3A` on `#F0D8D0`.
 
-Style cue: hand-drawn / sketchy — SVG turbulence filter (`#sketchy`) บน borders + circles.
+Fonts: **Sarabun** (body, TH+EN), **Caveat** (display, EN-only headlines + WordMark), **JetBrains Mono** (code/monospace).
+
+Mascot: hand-drawn cardboard box with ✓-mouth — [`design/mascot-icon/lungnote-mascot-icon.svg`](https://github.com/PASAKON/LungNote-design/blob/main/mascot-icon/lungnote-mascot-icon.svg).
 
 ---
 
@@ -176,7 +179,7 @@ Content:
 - Notebook-paper feel (lined background subtle)
 - Caveat for note titles (display feel), Sarabun for body
 - Min-touch-target 44×44px (LINE WebView is mobile)
-- Use `--accent` (#6aab8e) for primary CTA
+- Use `--accent` (`#C9A040`) for primary CTA
 - Dark mode auto (prefers-color-scheme)
 
 ### 3.4 — States to mock
