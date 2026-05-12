@@ -104,11 +104,11 @@ All three end at the same place: Supabase session cookie → `/dashboard`.
 
 ## Open questions / TODO
 
-- [ ] LINE Console: add callback URL to allow-list
-- [ ] Implement `/api/auth/line/oauth/{start,callback}` routes
-- [ ] Add "เริ่มเลย" CTA on landing → `/api/auth/line/oauth/start`
-- [ ] Refactor LIFF + OAuth + account-linking → shared `upsertLineUserAndSetSession()` helper
-- [ ] Update Glossary: OAuth code flow, state nonce
+- [x] LINE Console: add callback URL to allow-list
+- [x] Implement `/api/auth/line/oauth/{start,callback}` routes
+- [x] Add "เริ่มเลย" CTA on landing → `/api/auth/line/oauth/start`
+- [x] Refactor LIFF + OAuth + account-linking → shared helper in `lib/auth/line-session.ts#upsertLineUserAndSetSession`
+- [x] Update Glossary: OAuth code flow, state nonce (in [[../30-Domain/Glossary|Glossary § Auth & Identity]])
 - [ ] Rate-limit `/oauth/start` per IP (defer until traffic)
 
 ## See Also

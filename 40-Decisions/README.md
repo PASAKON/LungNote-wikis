@@ -24,6 +24,11 @@ tags: [adr, decisions]
 | 0011 | [[0011-web-line-login-oauth]] | Accepted | 2026-05-08 |
 | 0012 | [[0012-unified-todo-memory-model]] | Accepted | 2026-05-08 |
 | 0013 | [[0013-cardboard-theme-overhaul]] | Accepted | 2026-05-09 |
+| 0014 | [[0014-observability-chat-traces]] | Accepted | 2026-05-12 |
+| 0015 | [[0015-admin-debug-viewer]] | Accepted | 2026-05-12 |
+| 0016 | [[0016-ai-agent-v2]] | Accepted | 2026-05-12 |
+| 0017 | [[0017-claudeflow-patterns]] | Accepted | 2026-05-12 |
+| 0018 | [[0018-user-memory]] | Accepted | 2026-05-12 |
 
 ## Status legend
 

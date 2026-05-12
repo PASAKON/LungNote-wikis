@@ -305,7 +305,17 @@ alter table <table> enable row level security;
 -- ไม่มี policy = ห้าม anon/authenticated เข้า. ใช้ผ่าน service_role เท่านั้น.
 ```
 
-ใช้กับ `lungnote_auth_link_tokens` (token mint/redeem ฝั่ง server เท่านั้น).
+Tables ที่ใช้ pattern นี้:
+
+| Table | Purpose | ADR |
+|-------|---------|-----|
+| `lungnote_auth_link_tokens` | One-time auth tokens (mint + redeem server-side) | [[../40-Decisions/0008-line-only-auth-account-linking\|ADR-0008]] |
+| `lungnote_conversation_memory` | Rolling 5+5 chat history per LINE userId | [[../40-Decisions/0012-unified-todo-memory-model\|ADR-0012]] / [[../40-Decisions/0016-ai-agent-v2\|ADR-0016]] |
+| `lungnote_chat_traces` | Per-turn observability rows; read via admin viewer | [[../40-Decisions/0014-observability-chat-traces\|ADR-0014]] |
+| `lungnote_user_memory` | Persistent JSONB facts per LINE userId | [[../40-Decisions/0018-user-memory\|ADR-0018]] |
+| `lungnote_agent_settings` | Singleton row — hot-swap system prompt | [[../40-Decisions/0017-claudeflow-patterns\|ADR-0017]] |
+
+Access ผ่าน `createAdminClient()` (`src/lib/supabase/admin.ts`) ที่ใช้ `SUPABASE_SECRET_KEY`. Client code (browser) ห้ามเข้าถึง.
 
 ### 3.4 Read-only public view (ไม่ได้ใช้ตอนนี้, แต่ pattern)
 
