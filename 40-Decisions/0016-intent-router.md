@@ -90,12 +90,37 @@ Router rescued 3 patterns that Flash dropped:
 - `update_due_position_3` — Flash returned no tool → Pro updated
 - `profile_set_timezone` — Flash lied ("จำให้") → Pro stored the fact
 
-Still failing (separate work — can't predict from user text):
-- `list_pending_three_items` / `list_pending_with_flex` — Flash ends
-  the turn after `list_pending` with no `send_flex_reply`. The
-  router can't catch this; the trigger is post-tool-call, not
-  pre-message. Possible fix: bubble-empty detection + retry, future
-  ADR.
+**Update (2026-05-15, webapp PR #67) — empty-reply rescue path**
+
+The "still failing" case below got a follow-up fix. The router can
+only escalate on patterns it can see in the user text; the
+list-then-no-flex failure happens *after* the tool call, so the
+router can't reach it. Instead, `runAgent` now retries once with
+the complex model when:
+
+- the bubble buffer is empty + `result.text` is empty;
+- at least one tool ran and every tool that ran is read-only
+  (`list_pending` / `list_done`);
+- the model used was the fast tier.
+
+The retry uses the prior tool messages (so it doesn't re-fetch the
+list) and a **reply-only tool subset** (`send_text_reply` +
+`send_flex_reply`), capped at `maxSteps: 2`. Cost/tokens fold into
+the trace totals; `meta.route_reason` becomes `"<reason>+retry"`.
+
+With the rescue path on, the same 31-case eval moves to:
+
+| Config | Tool match | Judge yes+partial | Cost | Lat p50 |
+|---|---|---|---|---|
+| Router only | 93.5% | 87.1% | \$0.031 | 7.5s |
+| **Router + retry** | **96.8%** | **87.1%** | \$0.041 | **3.7s** |
+| Pro only | 96.8% | 90.3% | \$0.238 | 13.1s |
+
+Tool match now matches Pro-only quality at ~17× lower cost. Latency
+p50 *improves* vs router-only (3.7s vs 7.5s) — most turns succeed
+first try; only the dropped-flex stragglers escalate. Toggle via
+`LLM_REPLY_RETRY_ENABLED=false`. Eval baseline checked in at
+`webapp/eval/baselines/router-retry/`.
 
 ## Consequences
 

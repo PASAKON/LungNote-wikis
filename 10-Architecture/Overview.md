@@ -103,6 +103,13 @@ runAgent(userText, ctx)
   regex+length classifier. Escalates ~5 high-failure patterns
   (update verbs, profile facts, multi-position, long messages,
   multi-clause) to Gemini 2.5 Pro. Toggle via `LLM_ROUTER_ENABLED=true`.
+- **Empty-reply rescue**: post-hoc retry inside `runAgent`. When
+  Flash ends a turn with no LINE bubble after a read-only tool
+  (`list_pending`/`list_done`), retry once with the complex model
+  using only the reply tools. Brings tool-match to Pro-only quality
+  (96.8%) at ~17× lower cost. Toggle via `LLM_REPLY_RETRY_ENABLED`
+  (default on). See [[../40-Decisions/0016-intent-router|ADR-0016]]
+  *Update 2026-05-15*.
 - **Eval harness**: `webapp/scripts/eval/`
   ([[../40-Decisions/0015-agent-eval-harness|ADR-0015]]). 31-case
   curated Thai corpus, mocked tools (no Supabase / no LINE), LLM

@@ -53,7 +53,8 @@ tags: [domain, glossary]
 | **Intent router** | Per-turn heuristic at `webapp/src/lib/agent/router.ts` that picks the model based on the user message ([[../40-Decisions/0016-intent-router\|ADR-0016]]). Flash default; Pro on escalation patterns |
 | **Eval harness** | `webapp/scripts/eval/` — replays a curated Thai corpus through any LLM with mocked tools and emits a scored Markdown report ([[../40-Decisions/0015-agent-eval-harness\|ADR-0015]]) |
 | **Trace** | One row in `lungnote_chat_traces` representing one LINE turn (input, tool calls, reply, meta). Surfaced in the admin viewer at `admin.lungnote.com/traces` |
-| **Route reason** | `meta.route_reason` field on a trace — names which intent-router trigger fired (`default`, `update_verb`, `profile_fact`, `multi_position`, `long_message`, `complex_clause`, `router_disabled`) |
+| **Route reason** | `meta.route_reason` field on a trace — names which intent-router trigger fired (`default`, `update_verb`, `profile_fact`, `multi_position`, `long_message`, `complex_clause`, `router_disabled`). Suffix `+retry` means the [[../40-Decisions/0016-intent-router\|empty-reply rescue]] kicked in |
+| **Empty-reply rescue** | Post-hoc retry inside `runAgent` that calls the complex model with a reply-only tool subset when the fast model ends a turn with no bubble after a read-only tool call. Toggle via `LLM_REPLY_RETRY_ENABLED`. See [[../40-Decisions/0016-intent-router\|ADR-0016]] *Update 2026-05-15* |
 | **OpenRouter** | LLM provider aggregator we route through for non-Anthropic models (Gemini, GPT). Single `OPENROUTER_API_KEY` env covers all of them |
 
 ## Supabase / DB
