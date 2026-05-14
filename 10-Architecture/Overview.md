@@ -70,7 +70,53 @@ Postgres + RLS (per-user isolation)
 - Mutation ผ่าน Server Action เป็นหลัก, fallback REST เฉพาะที่ต้อง
 - Realtime / Storage = ค่อยเพิ่มเมื่อมี use case
 
+## AI Agent
+
+LungNote's LINE bot routes every user message through a tool-using
+LLM agent at `webapp/src/lib/agent/`. The agent exposes 11 tools
+(save / list / complete / uncomplete / update / delete / save_note
+/ dashboard_link / update_memory / send_text_reply / send_flex_reply).
+
+Model selection is layered:
+
+```
+LINE webhook
+   │
+   ▼
+runAgent(userText, ctx)
+   │
+   ├─→ routeModel(userText)      ← heuristic intent router
+   │       └─→ { modelId, reason }     (ADR-0016)
+   │
+   ├─→ resolveModel(modelId)     ← provider routing
+   │       ├─ anthropic/*  + ANTHROPIC_API_KEY → Anthropic direct (cache on)
+   │       └─ else                              → OpenRouter passthrough
+   │
+   └─→ generateText(...) → tool loop → flush bubbles → reply
+```
+
+- **Default model**: `google/gemini-2.5-flash` ([[../40-Decisions/0014-llm-default-gemini-2-5-flash|ADR-0014]]).
+  Set via Vercel env `LLM_MODEL`. ~98% cheaper than Sonnet, 4.4s p50
+  latency on the eval corpus.
+- **Intent router**: `webapp/src/lib/agent/router.ts`
+  ([[../40-Decisions/0016-intent-router|ADR-0016]]). Heuristic
+  regex+length classifier. Escalates ~5 high-failure patterns
+  (update verbs, profile facts, multi-position, long messages,
+  multi-clause) to Gemini 2.5 Pro. Toggle via `LLM_ROUTER_ENABLED=true`.
+- **Eval harness**: `webapp/scripts/eval/`
+  ([[../40-Decisions/0015-agent-eval-harness|ADR-0015]]). 31-case
+  curated Thai corpus, mocked tools (no Supabase / no LINE), LLM
+  judge for reply equivalence, Markdown reports. Baseline snapshots
+  in `webapp/eval/baselines/`.
+
+**Trace observability**: every turn writes one row to
+`lungnote_chat_traces`. The admin viewer at `admin.lungnote.com/traces`
+shows model id + a route-reason pill + tool calls + reply.
+
 ## See Also
 
 - [[../20-Conventions/Code-Style]]
 - [[../40-Decisions/README]]
+- [[../40-Decisions/0014-llm-default-gemini-2-5-flash|ADR-0014 — Default LLM]]
+- [[../40-Decisions/0015-agent-eval-harness|ADR-0015 — Eval Harness]]
+- [[../40-Decisions/0016-intent-router|ADR-0016 — Intent Router]]

@@ -49,6 +49,12 @@ tags: [domain, glossary]
 |------|-------|
 | **App** | `webapp/` — Next.js app |
 | **Vault** | `wikis/` — Obsidian vault |
+| **Agent** | The tool-using LLM that handles every LINE message — `webapp/src/lib/agent/`. Not a generic chatbot; it has a curated tool catalog (11 tools) |
+| **Intent router** | Per-turn heuristic at `webapp/src/lib/agent/router.ts` that picks the model based on the user message ([[../40-Decisions/0016-intent-router\|ADR-0016]]). Flash default; Pro on escalation patterns |
+| **Eval harness** | `webapp/scripts/eval/` — replays a curated Thai corpus through any LLM with mocked tools and emits a scored Markdown report ([[../40-Decisions/0015-agent-eval-harness\|ADR-0015]]) |
+| **Trace** | One row in `lungnote_chat_traces` representing one LINE turn (input, tool calls, reply, meta). Surfaced in the admin viewer at `admin.lungnote.com/traces` |
+| **Route reason** | `meta.route_reason` field on a trace — names which intent-router trigger fired (`default`, `update_verb`, `profile_fact`, `multi_position`, `long_message`, `complex_clause`, `router_disabled`) |
+| **OpenRouter** | LLM provider aggregator we route through for non-Anthropic models (Gemini, GPT). Single `OPENROUTER_API_KEY` env covers all of them |
 
 ## Supabase / DB
 

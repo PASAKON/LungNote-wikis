@@ -24,6 +24,9 @@ tags: [adr, decisions]
 | 0011 | [[0011-web-line-login-oauth]] | Accepted | 2026-05-08 |
 | 0012 | [[0012-unified-todo-memory-model]] | Accepted | 2026-05-08 |
 | 0013 | [[0013-cardboard-theme-overhaul]] | Accepted | 2026-05-09 |
+| 0014 | [[0014-llm-default-gemini-2-5-flash]] | Accepted | 2026-05-14 |
+| 0015 | [[0015-agent-eval-harness]] | Accepted | 2026-05-14 |
+| 0016 | [[0016-intent-router]] | Accepted | 2026-05-14 |
 
 ## Status legend
 
