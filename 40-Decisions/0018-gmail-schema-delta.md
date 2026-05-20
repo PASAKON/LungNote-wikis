@@ -96,6 +96,8 @@ create table lungnote_gmail_connections (
   last_error                  text,                    -- last sync error message, nullable
   last_history_id             text,                    -- Gmail historyId watermark, nullable on first
   last_synced_at              timestamptz,
+  watch_expires_at            timestamptz,             -- Gmail users.watch() expiration (max 7d, null pre-watch)
+  watch_resource_state        text,                    -- e.g. 'active', 'expired' — debug field
   created_at                  timestamptz not null default now(),
   updated_at                  timestamptz not null default now(),
   constraint lungnote_gmail_connections_user_unique unique (user_id)

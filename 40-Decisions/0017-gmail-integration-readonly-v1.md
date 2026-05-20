@@ -115,15 +115,38 @@ Schema รายละเอียดดู [[0018-gmail-schema-delta|ADR-0018]]
 - RLS: user เห็นแค่ connection ของตัวเอง. Service role bypass สำหรับ cron
   sync เท่านั้น
 
-### Sync Trigger (v1)
+### Sync Trigger (v1) — Hybrid push + reconcile
 
-- **Manual**: ปุ่ม "Scan now" บน dashboard → POST `/api/gmail/scan`
-- **LINE bot tool**: `scan_gmail()` ใน agent catalog → user chat OA "ดู Gmail" → trigger สแกน (รายละเอียดดู [[0019-gmail-extract-agent-tool|ADR-0019]])
-- **Cron (defer phase 2)**: Vercel cron 08:00 BKK daily — ต้อง Pro plan
-  budget approval ([[0012-unified-todo-memory-model|ADR-0012]] Phase 3 pattern)
+1. **Primary — Gmail Push Notification via Pub/Sub**
+   - On connect: `users.watch({topicName, labelIds:['INBOX']})` → returns
+     `historyId` + `expiration` (max 7 days)
+   - Gmail → Pub/Sub topic `projects/<gcp_project>/topics/gmail-events` →
+     push subscription → POST `/api/gmail/pubsub`
+   - Webhook: verify Google ID token (`google-auth-library`) → ack 200
+     within < 1s → background job runs sync (history.list since
+     `last_history_id` → classify → upsert todos)
+   - Target latency: < 30s from email arrival → todo appears
+2. **Safety net — Reconcile cron every 1 hour**
+   - `0 * * * *` → POST `/api/cron/gmail-reconcile` (Bearer `CRON_SECRET`)
+   - Iterates active connections, runs same sync function
+   - Catches messages that Pub/Sub dropped or webhook missed (network /
+     cold start failures)
+   - **Idempotent** via `lungnote_gmail_synced_messages.unique(user_id, message_id)`
+3. **Watch renewal cron daily**
+   - `0 0 * * *` → POST `/api/cron/gmail-watch-renew` (Bearer `CRON_SECRET`)
+   - Iterates connections where `watch_expires_at < now() + 24h` → calls
+     `users.watch()` again → updates expiration
+4. **Manual "Scan now" button** — defer (cron 1h + push พอสำหรับ MVP)
+5. **LINE bot `scan_gmail` tool** — defer phase 2 (ดู [[0019-gmail-extract-agent-tool|ADR-0019]] §LINE bot flow)
 
 Watermark: `last_history_id` (Gmail `historyId` cursor). ครั้งแรก = full
-fetch ของ INBOX label 30 วันล่าสุด (cap 200 messages).
+fetch ของ INBOX label 30 วันล่าสุด (cap 200 messages). Subsequent = both
+push และ reconcile cron ใช้ cursor เดียวกัน — idempotent ผ่าน unique
+constraint.
+
+Pub/Sub dedup: ใช้ Pub/Sub `messageId` ใน webhook handler เป็น dedup key
+ใน in-memory cache (5 min TTL) ก่อน enqueue background job. Network จริงๆ
+จะมี at-least-once delivery บางครั้ง.
 
 ### What gets stored
 
@@ -198,10 +221,11 @@ If todo extracted: `lungnote_todos.text` = AI-generated short title +
   - friction สูง (สิทธิ์เยอะ user กลัว)
   - ต้อง CASA assessment ทันที = launch ช้า 6-12 wk
   - ถ้า v1 ไม่ใช้ scope `modify` = Google audit จะตั้งคำถาม "ขอเกินจริง?"
+- **Cron-only (no push)** — ง่ายกว่า Pub/Sub แต่ user รอ todo นาน 0-1h (cron
+  interval). Pub/Sub push เพิ่ม latency < 30s = UX ดีกว่าชัดเจน, infra
+  overhead ยอมรับได้
 - **MCP server expose** ([[0019-gmail-extract-agent-tool|ADR-0019]] discusses)
   — defer, ไม่ใช่ v1 requirement
-- **Google Cloud Pub/Sub push notification** — real-time แต่ต้อง Pub/Sub
-  setup + Vercel cold start handling = scope creep
 - **3rd-party Gmail MCP server** (เช่น `GongRzhe/Gmail-MCP-Server`) — desktop /
   single-user, ไม่ scale multi-tenant SaaS
 
@@ -221,6 +245,15 @@ GOOGLE_OAUTH_CLIENT_ID=<from Google Cloud Console>
 GOOGLE_OAUTH_CLIENT_SECRET=<server-only secret>
 GOOGLE_OAUTH_REDIRECT_URI=https://lungnote.com/api/auth/gmail/callback
 GMAIL_ENC_KEY=<base64 32 bytes, server-only>
+
+# Pub/Sub real-time push
+GCP_PROJECT_ID=<google cloud project id>
+GMAIL_PUBSUB_TOPIC=projects/<GCP_PROJECT_ID>/topics/gmail-events
+PUBSUB_PUSH_SERVICE_ACCOUNT=<sa email used in push subscription auth>
+PUBSUB_AUDIENCE=https://lungnote.com/api/gmail/pubsub
+
+# Cron auth
+CRON_SECRET=<base64 32 bytes, server-only>
 ```
 
 ตั้งทั้งที่ `.env.local` (dev) + Vercel Production. local dev redirect URI =
