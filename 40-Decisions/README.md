@@ -27,6 +27,9 @@ tags: [adr, decisions]
 | 0014 | [[0014-llm-default-gemini-2-5-flash]] | Accepted | 2026-05-14 |
 | 0015 | [[0015-agent-eval-harness]] | Accepted | 2026-05-14 |
 | 0016 | [[0016-intent-router]] | Accepted | 2026-05-14 |
+| 0017 | [[0017-gmail-integration-readonly-v1]] | Proposed | 2026-05-20 |
+| 0018 | [[0018-gmail-schema-delta]] | Proposed | 2026-05-20 |
+| 0019 | [[0019-gmail-extract-agent-tool]] | Proposed | 2026-05-20 |
 
 ## Status legend
 
