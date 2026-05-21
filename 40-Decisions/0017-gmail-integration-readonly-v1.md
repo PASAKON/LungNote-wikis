@@ -37,27 +37,59 @@ Constraints:
 
 Gmail OAuth scopes ที่เป็นไปได้:
 
-| Scope | สิทธิ์ | Sensitivity |
-|-------|--------|-------------|
+| Scope | สิทธิ์ | Sensitivity (2026) |
+|-------|--------|--------------------|
 | `gmail.metadata` | header เท่านั้น (ไม่อ่าน body / subject) | non-sensitive |
-| `gmail.readonly` | อ่านทุกอย่าง (body, attachment) | **Sensitive** |
+| `gmail.readonly` | อ่านทุกอย่าง (body, attachment) | **Restricted** ⚠️ |
 | `gmail.modify` | อ่าน + เขียน + label + draft + send (ไม่รวม permanent delete) | **Restricted** |
 | `gmail.send` | ส่งอย่างเดียว | Sensitive |
-| `https://mail.google.com/` | full access รวม permanent delete | Restricted |
+| `https://mail.google.com/` | full access รวม permanent delete | **Restricted** |
+
+⚠️ **Note**: Google ได้ reclassify `gmail.readonly` จาก Sensitive → **Restricted**
+แล้ว (ตรวจที่ Console > Data Access "Your restricted scopes" — ทั้ง 3
+gmail scopes อยู่ใต้ Restricted section หมด). ADR เดิมสมมุติว่า readonly
+= Sensitive ที่ไม่ต้อง CASA — **stale**. ทุก gmail scope ตอนนี้ต้อง CASA
+เมื่อจะออก test users mode.
 
 Verification ของ Google:
 
 - **Sensitive** scope = ต้องผ่าน OAuth brand verification + privacy policy
   audit + demo video (4-6 สัปดาห์, ฟรี)
 - **Restricted** scope = ทั้งด้านบน + **annual CASA security assessment**
-  ($300-500 USD ต่อปี, 6-12 สัปดาห์ผ่าน 3rd-party)
-- ก่อนผ่าน verification = cap ที่ "test users" 100 คน
+  ($300-500 USD/ปี Tier 2, 6-12 สัปดาห์ผ่าน 3rd-party assessor —
+  Bishop Fox / Leviathan / Cobalt / NCC Group ฯลฯ)
+- ก่อนผ่าน verification = cap ที่ "test users" 100 คน. cap นี้ครอบ
+  consent screen ทั้ง project — ไม่ขึ้นกับ tier ที่ user เลือก
+- **Production path**: testing mode → CASA + brand verify → public
 
 ## Decision
 
-**v1 ใช้ `gmail.readonly` อย่างเดียว.** เมื่อ user ต้องการ AI ติด label /
-ร่าง reply (defer phase ต่อไป) → upgrade เป็น `gmail.modify` ผ่าน ADR ใหม่
-+ consent screen รอบสอง.
+**v1 ให้ user เลือก scope tier ที่จุด Connect** (UI dropdown) — default
+= `read`. ทั้ง 3 tiers ถูก register ใน Google Cloud Console > Data Access
+ตั้งแต่ MVP setup.
+
+| Tier (URL `?tier=`) | Scope | UI label | Use case |
+|---|---|---|---|
+| `read` (default) | `gmail.readonly` | "อ่านอย่างเดียว" | AI extract to-do เท่านั้น (แนะนำ) |
+| `edit` | `gmail.modify` | "อ่าน + แก้ไข" | + label / draft reply / send / archive |
+| `full` | `https://mail.google.com/` | "ทุกสิทธิ์" | + permanent delete (ระวัง) |
+
+**AI deny list ยังบังคับใน code เสมอ**: ห้ามเรียก `messages.trash` /
+`messages.delete` / `messages.batchDelete` แม้ token จะมีสิทธิ์ —
+deny list อยู่ใน agent tool catalog ([[0019-gmail-extract-agent-tool|ADR-0019]])
++ Gmail REST wrapper. Scope = permission ceiling, ไม่ใช่ behavior.
+
+Implementation:
+- `src/lib/gmail/oauth.ts` — `GmailScopeTier` type + `buildScopeString(tier)` +
+  `isGmailScopeTier()` guard
+- `src/app/api/auth/gmail/connect/route.ts` — อ่าน `?tier=` query
+- `src/app/[locale]/dashboard/GmailConnectionCard.tsx` — `<select>` + dynamic href
+
+Reason ที่ขยายจากเดิม "readonly only":
+1. Google reclassify readonly → Restricted แล้ว (note ข้างบน). CASA จำเป็น
+   ไม่ว่าจะเลือก tier ไหน → barrier ที่กลัวลดลง
+2. User ขอควบคุมระดับสิทธิ์เอง — โปร่งใส, เคารพ choice
+3. Defer phase 5 (modify scope) → ตอนนี้ available ทันทีให้ user เลือก
 
 ### Connection Model
 
@@ -86,7 +118,12 @@ Schema รายละเอียดดู [[0018-gmail-schema-delta|ADR-0018]]
    a. require Supabase session (LINE-authenticated user)
    b. generate state (32-byte base64url, HttpOnly cookie 5 min TTL)
    c. redirect → Google OAuth consent
-      scope = openid email profile https://www.googleapis.com/auth/gmail.readonly
+      scope = openid email profile <gmail-scope-for-tier>
+        where <gmail-scope-for-tier> ∈ {
+          gmail.readonly  (tier=read, default)
+          gmail.modify    (tier=edit)
+          https://mail.google.com/  (tier=full)
+        }
       access_type=offline, prompt=consent (force refresh_token)
    ↓
 3. User authorizes (test users mode pre-verification)
